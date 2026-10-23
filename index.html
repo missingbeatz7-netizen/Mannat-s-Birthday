@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+  ★★★ QUICK GUIDE ★★★
+  Press Ctrl+F and search:
+     "CHANGE SONG"   -> jump to the song (plain HTML, <audio> tag)
+     "CHANGE PHOTOS" -> jump to the photos (plain HTML, one block per photo)
+  Everything else (letter text etc.) is in the CONFIG near the bottom.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>For Montuuuuu, With All My Heart</title>
+<meta name="description" content="A little birthday universe for Montuuuuu, made by Krish.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:ital,wght@0,500;1,400;1,600&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* =====================================================
+   STYLES - colours are the variables at the very top.
+   ===================================================== */
+:root{--blush:#fde4ec;--lav:#e6dcfa;--cream:#fff8f0;--rose:#d94a76;--gold:#d9b878;--plum:#4a2545;--pink:#f4b7cb}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:60px}
+body{margin:0;font:400 1.05rem/1.7 Nunito,system-ui,sans-serif;color:var(--plum);background:linear-gradient(160deg,var(--blush),var(--cream) 40%,var(--lav));background-attachment:fixed;overflow-x:hidden}
+body.lock{overflow:hidden}
+h1,h2{font-family:Fraunces,Georgia,serif;font-weight:500;line-height:1.2;margin:0 0 .6em}
+h2{font-size:clamp(1.6rem,5vw,2.4rem);text-align:center}
+.hand{font:700 1.6rem/1.3 Caveat,cursive;color:var(--rose);margin:.3em 0}
+.big{font-size:clamp(2.2rem,9vw,5rem);font-style:italic;font-weight:600}
+.lead{font-size:1.2rem;max-width:34ch;margin:.5em auto}
+.sub{text-align:center;opacity:.8}
+:focus-visible{outline:3px solid var(--plum);outline-offset:3px;border-radius:6px}
+.btn{font:600 1rem Nunito,sans-serif;color:#fff;background:var(--rose);border:0;border-radius:99px;padding:.8em 1.5em;cursor:pointer;text-decoration:none;display:inline-block;box-shadow:0 6px 20px rgba(217,74,118,.3);transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.btn.alt{background:var(--plum)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;color:var(--plum);text-decoration:underline;cursor:pointer;font:inherit;position:absolute;top:14px;right:16px}
+.row{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;margin:1rem 0}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:100}
+#petals{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.pt{position:absolute;top:-30px;animation:fall linear forwards}
+@keyframes fall{to{transform:translate(var(--dx,40px),110vh) rotate(360deg)}}
+/* intro */
+#intro{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;text-align:center;padding:1rem;background:linear-gradient(135deg,#f9c9da,#d9c8f5,#fbe3d0,#f9c9da);background-size:300% 300%;animation:bg 12s ease infinite;transition:opacity .9s,visibility .9s}
+#intro.gone{opacity:0;visibility:hidden}
+@keyframes bg{50%{background-position:100% 50%}}
+.intro-title{font-size:clamp(2rem,8vw,3.4rem);font-style:italic;margin:0}
+.env{position:relative;width:min(260px,70vw);aspect-ratio:3/2;margin:1.2rem 0;background:#f2a9c0;border-radius:8px;box-shadow:0 0 50px 8px rgba(255,255,255,.6);animation:glow 3s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 70px 18px rgba(255,255,255,.85)}}
+.front{position:absolute;inset:0;background:#f8c4d4;border-radius:8px;clip-path:polygon(0 25%,50% 65%,100% 25%,100% 100%,0 100%);z-index:3}
+.flap{position:absolute;left:0;top:0;width:100%;height:65%;background:#eb93b0;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .7s,z-index 0s .35s;z-index:4}
+.paper{position:absolute;left:10%;right:10%;top:10%;bottom:10%;background:var(--cream);border-radius:6px;display:grid;place-items:center;font-size:2rem;transition:transform .9s .5s;z-index:2}
+#intro.open .flap{transform:rotateX(180deg);z-index:0}
+#intro.open .paper{transform:translateY(-55%)}
+#intro.open .env{animation:none}
+#intro-msg{max-width:30ch}
+/* nav */
+#top-nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:center;padding:.5rem}
+#menu{display:flex;gap:.2rem;background:rgba(255,248,240,.85);backdrop-filter:blur(8px);border-radius:99px;padding:.2rem .5rem;box-shadow:0 4px 18px rgba(74,37,69,.1)}
+#menu a{color:var(--plum);text-decoration:none;padding:.35rem .7rem;border-radius:99px;font-size:.9rem}
+#menu a:hover{background:var(--blush)}
+#navbtn{display:none;margin-left:auto;font-size:1.3rem;background:var(--cream);border:0;border-radius:50%;width:44px;height:44px;cursor:pointer}
+#fab-music,#totop{position:fixed;right:14px;z-index:20;width:48px;height:48px;border-radius:50%;border:0;background:var(--plum);color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:0 6px 18px rgba(74,37,69,.3)}
+#fab-music{bottom:14px}#totop{bottom:72px;background:var(--rose)}
+#fab-music.on{animation:pulse 1.6s infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+/* hero */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5rem 1.2rem 3rem;overflow:hidden}
+.hero>*{position:relative;z-index:2}
+.moon{position:absolute!important;z-index:0!important;top:9%;right:10%;width:clamp(90px,18vw,170px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffdf5,#f6e3b6);box-shadow:0 0 80px 30px rgba(246,227,182,.6)}
+.balloon,.flower{position:absolute!important;font-size:clamp(2rem,7vw,3.4rem);z-index:1!important}
+.b1{left:7%;top:60%;animation:float 6s ease-in-out infinite}.b2{right:8%;top:50%;animation:float 7s -2s ease-in-out infinite}
+.f1{left:12%;bottom:6%;animation:sway 5s ease-in-out infinite}.f2{right:14%;bottom:8%;animation:sway 6s -1s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-22px) rotate(4deg)}}
+@keyframes sway{50%{transform:rotate(8deg)}}
+.cake-emoji{display:inline-block;animation:float 3s ease-in-out infinite}
+/* sections */
+.sec{max-width:1000px;margin:0 auto;padding:4.5rem 1.2rem;position:relative;z-index:2}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .9s,transform .9s}
+.rv.in{opacity:1;transform:none}
+.letter{max-width:640px;margin:1.5rem auto;padding:2rem 1.6rem;background:var(--cream);border-radius:6px 6px 14px 14px;box-shadow:0 14px 40px rgba(74,37,69,.14);font:500 1.45rem/1.6 Caveat,cursive;background-image:repeating-linear-gradient(transparent 0 2.3rem,rgba(244,183,203,.35) 2.3rem calc(2.3rem + 1px))}
+.letter p{margin:0 0 1rem;opacity:0;transform:translateY(10px);transition:opacity .7s,transform .7s}
+.letter.in p{opacity:1;transform:none}
+.sign{white-space:pre-line}
+.wishmsg,#secret{animation:pop .8s}
+@keyframes pop{from{opacity:0;transform:scale(.92)}}
+/* gallery */
+.wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem 1.5rem;margin-top:2rem}
+.pol{background:#fff;border:0;padding:12px 12px 14px;border-radius:4px;box-shadow:0 10px 26px rgba(74,37,69,.18);transform:rotate(var(--r));transition:transform .3s;cursor:pointer;text-align:center;font:inherit;color:inherit}
+.pol:hover,.pol:focus-visible{transform:rotate(0) scale(1.05);z-index:3}
+.ph{aspect-ratio:1;border-radius:2px;overflow:hidden;background:linear-gradient(135deg,var(--blush),var(--lav));display:grid;place-items:center;text-align:center;font-size:.95rem;padding:.5rem}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.cap{font:700 1.25rem/1.2 Caveat,cursive;margin:.6rem 0 0;color:var(--plum)}.dt{font-size:.8rem;opacity:.7;display:block}
+#lb{position:fixed;inset:0;z-index:90;background:rgba(40,15,38,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:1rem}
+#lb[hidden]{display:none}
+#lb .ph{width:min(86vw,520px);max-height:70vh;aspect-ratio:auto;min-height:260px}
+#lb .ph img{max-height:70vh;object-fit:contain}
+#lb p{color:#fff;font:700 1.5rem Caveat,cursive;margin:0;text-align:center}
+.lbb{position:absolute;background:var(--cream);color:var(--plum);border:0;border-radius:50%;width:48px;height:48px;font-size:1.4rem;cursor:pointer}
+#lb-x{top:14px;right:14px}#lb-p{left:10px;top:50%}#lb-n{right:10px;top:50%}
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:2rem}
+.card{font:inherit;color:inherit;text-align:left;background:rgba(255,255,255,.7);border:1px solid rgba(217,184,120,.5);border-radius:18px;padding:1.3rem;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.card:hover,.card.on{transform:translateY(-6px) rotate(-1deg);box-shadow:0 14px 30px rgba(217,74,118,.2);background:#fff}
+.card .ic{font-size:1.8rem;display:block}.card b{font-family:Fraunces,serif;font-size:1.1rem;display:block;margin:.3rem 0}
+.card.on .ic{animation:pulse .6s 2}
+/* dept */
+.dept{text-align:center}
+.heart{font-size:4rem;background:none;border:0;cursor:pointer;animation:beat 1.6s infinite}
+.heart.pop{animation:pop2 .5s}
+@keyframes beat{50%{transform:scale(1.15)}}@keyframes pop2{50%{transform:scale(1.6) rotate(10deg)}}
+.said{min-height:5rem;font:700 1.6rem/1.3 Caveat,cursive;color:var(--rose);max-width:30ch;margin:.5rem auto}
+/* cake */
+#cake{text-align:center}
+#cake-svg{display:block;width:min(300px,80vw);margin:1rem auto;overflow:visible}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flick .5s infinite alternate;filter:drop-shadow(0 0 6px #f7c873)}
+@keyframes flick{to{transform:scale(.88,1.1) rotate(4deg)}}
+#cake.wishing #cake-svg{filter:drop-shadow(0 0 22px rgba(247,200,115,.8))}
+#cake.out .flame{display:none}
+.wishmsg{text-align:center}
+/* music */
+.player{display:flex;gap:1.4rem;align-items:center;max-width:620px;margin:1.5rem auto;padding:1.4rem;background:rgba(255,255,255,.7);border-radius:24px;box-shadow:0 14px 40px rgba(74,37,69,.14)}
+.cover{flex:0 0 120px;height:120px;border-radius:20px;background:linear-gradient(135deg,var(--pink),var(--lav));display:grid;place-items:center;font-size:2.6rem;overflow:hidden}
+.cover img{width:100%;height:100%;object-fit:cover}
+.pinfo{flex:1;min-width:0}.ptitle{font:600 1.2rem Fraunces,serif;margin:0}.part{margin:0 0 .5rem;opacity:.75}
+input[type=range]{width:100%;accent-color:var(--rose)}
+.times{display:flex;justify-content:space-between;font-size:.8rem}
+.ctrl{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.ctrl input{flex:1;min-width:80px}
+.ctrl .btn{padding:.5em 1.1em}
+/* surprise */
+#surprise{text-align:center}
+.gift{font-size:5rem;transition:transform .6s}
+.gift.open{transform:scale(1.3) rotate(-8deg)}
+#secret{text-align:left}
+/* final */
+.final{position:relative;z-index:2;text-align:center;padding:6rem 1.2rem;background:linear-gradient(180deg,transparent,#b9a2e0 40%,var(--plum));color:#fff}
+.final .hand{color:#ffd6e3;font-size:2rem}
+.final .btn{margin-top:1.5rem;background:var(--cream);color:var(--plum)}
+.star-row{color:var(--gold);letter-spacing:.6em;font-size:1.4rem;animation:pulse 3s infinite}
+@media(max-width:700px){
+ #navbtn{display:block}#top-nav{justify-content:flex-end}
+ #menu{display:none;position:absolute;top:56px;right:8px;flex-direction:column;border-radius:18px;padding:.5rem}
+ #menu.show{display:flex}
+ .player{flex-direction:column;text-align:center}.cover{flex-basis:auto;width:140px}
+ .letter{font-size:1.3rem;padding:1.5rem 1.1rem}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+ .rv,.letter p{opacity:1;transform:none}#petals{display:none}
+}
+
+</style>
+</head>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div id="petals" aria-hidden="true"></div>
+
+<!-- INTRO -->
+<section id="intro" aria-label="Opening screen">
+  <button id="skip" class="link" type="button">Skip intro</button>
+  <h1 class="intro-title">Hey, Montuuuuu… 💗</h1>
+  <p>Someone has made a little something just for you.</p>
+  <div class="env" id="env" aria-hidden="true">
+    <div class="paper">💗</div><div class="front"></div><div class="flap"></div>
+  </div>
+  <p id="intro-msg" class="hand" aria-live="polite" hidden></p>
+  <button id="open" class="btn" type="button">Open your little universe 💌</button>
+</section>
+
+<header id="top-nav">
+  <button id="navbtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu">☰</button>
+  <nav id="menu" aria-label="Main">
+    <a href="#home">Home</a><a href="#letter">Letter</a><a href="#memories">Memories</a>
+    <a href="#little-things">Little Things</a><a href="#music">Music</a><a href="#surprise">Surprise</a>
+  </nav>
+</header>
+<button id="fab-music" type="button" aria-label="Play music" hidden>♪</button>
+<button id="totop" type="button" aria-label="Back to top" hidden>↑</button>
+
+<main>
+<section id="home" class="hero">
+  <div class="moon" aria-hidden="true"></div>
+  <span class="balloon b1" aria-hidden="true">🎈</span><span class="balloon b2" aria-hidden="true">🎈</span>
+  <span class="flower f1" aria-hidden="true">🌷</span><span class="flower f2" aria-hidden="true">🌸</span>
+  <p class="hand">It’s your day!</p>
+  <h2 class="big">Happy Birthday, Montuuuuu! <span class="cake-emoji" aria-hidden="true">🎂</span></h2>
+  <p class="lead">Today is all about celebrating the wonderful person you are.</p>
+  <p id="countdown" class="hand" hidden></p>
+  <a class="btn" href="#letter">There’s so much I want to tell you…</a>
+</section>
+
+<section id="letter" class="sec">
+  <h2>A Little Letter for You 💌</h2>
+  <article class="letter" id="letter-body"></article>
+</section>
+
+<section id="memories" class="sec">
+  <h2>Little Moments, Big Memories 📸</h2>
+  <p class="sub">Tap a polaroid to look closer.</p>
+  <!-- ================================================================
+     ★★★★★  CHANGE PHOTOS HERE  ★★★★★
+     Put your pictures in the folder  assets/photos/
+     Each <button class="pol"> block below is ONE photo:
+       - src="assets/photos/....jpg"  -> your picture's file name
+       - <span class="ct">...</span>  -> the caption text
+       - <span class="dt"></span>     -> optional date, e.g. Jan 2026
+     ADD a photo   : copy one whole <button> ... </button> block and paste it below.
+     REMOVE a photo: delete its whole block.
+     ================================================================ -->
+  <div class="wall" id="wall">
+
+    <!-- ★ PHOTO 1:  change the file name in src="..."  and the caption / date text -->
+    <button class="pol" type="button">
+      <div class="ph"><img src="https://i.ibb.co/DDH6yR9t/1.jpg" alt="Photo 1" loading="lazy"></div>
+      <p class="cap"><span class="ct">A Dumb Smile</span><span class="dt"></span></p>
+    </button>
+
+    <!-- ★ PHOTO 2:  change the file name in src="..."  and the caption / date text -->
+    <button class="pol" type="button">
+      <div class="ph"><img src="https://i.ibb.co/zHm5LGCR/3.jpg" alt="Photo 2" loading="lazy"></div>
+      <p class="cap"><span class="ct">A pink fool as u fool</span><span class="dt"></span></p>
+    </button>
+
+    <!-- ★ PHOTO 3:  change the file name in src="..."  and the caption / date text -->
+    <button class="pol" type="button">
+      <div class="ph"><img src="https://i.ibb.co/bgTF2yVy/4.jpg" alt="Photo 3" loading="lazy"></div>
+      <p class="cap"><span class="ct">A cute Eyes</span><span class="dt"></span></p>
+    </button>
+
+    <!-- ★ PHOTO 4:  change the file name in src="..."  and the caption / date text -->
+    <button class="pol" type="button">
+      <div class="ph"><img src="https://i.ibb.co/XfRMcgxW/5.jpg" alt="Photo 4" loading="lazy"></div>
+      <p class="cap"><span class="ct">A pretty face</span><span class="dt"></span></p>
+    </button>
+
+    <!-- ★ PHOTO 5:  change the file name in src="..."  and the caption / date text -->
+    <button class="pol" type="button">
+      <div class="ph"><img src="https://i.ibb.co/vxNnn0hy/6.jpg" alt="Photo 5" loading="lazy"></div>
+      <p class="cap"><span class="ct">My Bro🤌🤌🤌</span><span class="dt"></span></p>
+    </button>
+
+    <!-- ★ PHOTO 6:  change the file name in src="..."  and the caption / date text -->
+    <button class="pol" type="button">
+      <div class="ph"><img src="https://i.ibb.co/n8KQJqyk/9.jpg" alt="Photo 6" loading="lazy"></div>
+      <p class="cap"><span class="ct">Sun Sunshine✨✨✨</span><span class="dt"></span></p>
+    </button>
+
+    <!-- ★ PHOTO 7:  change the file name in src="..."  and the caption / date text -->
+    <button class="pol" type="button">
+      <div class="ph"><img src="https://i.ibb.co/HpMxqHzx/10.jpg" alt="Photo 7" loading="lazy"></div>
+      <p class="cap"><span class="ct">Beautifully Stupid</span><span class="dt"></span></p>
+    </button>
+
+    <!-- ★ PHOTO 8:  change the file name in src="..."  and the caption / date text -->
+    <button class="pol" type="button">
+      <div class="ph"><img src="https://i.ibb.co/wNT2JKY4/11.jpg" alt="Photo 8" loading="lazy"></div>
+      <p class="cap"><span class="ct">Always My safe place</span><span class="dt"></span></p>
+    </button>
+  </div>
+  <!-- ★★★★★ END OF PHOTOS ★★★★★ -->
+</section>
+
+<section id="little-things" class="sec">
+  <h2>Things That Make You Special ✨</h2>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section id="appreciation" class="sec">
+  <h2>Official Montuuuuu Appreciation Department 🎀</h2>
+  <div class="dept">
+    <button id="heart" class="heart" type="button" aria-label="Tap the heart for a happy pop">💗</button>
+    <p id="said" class="said" aria-live="polite">Press a button. The department is ready.</p>
+    <div class="row">
+      <button class="btn" type="button" data-pool="compliments">Get a compliment</button>
+      <button class="btn alt" type="button" data-pool="happiness">Press for a little happiness</button>
+      <button class="btn alt" type="button" data-pool="funny">A silly message</button>
+    </div>
+  </div>
+</section>
+
+<section id="cake" class="sec">
+  <h2>Make a Wish 🎂</h2>
+  <svg id="cake-svg" viewBox="0 0 220 210" role="img" aria-label="Birthday cake with three candles">
+    <ellipse cx="110" cy="192" rx="98" ry="12" fill="#e6dcfa"/>
+    <rect x="28" y="132" width="164" height="58" rx="14" fill="#f4b7cb"/>
+    <rect x="54" y="90" width="112" height="46" rx="12" fill="#fbd5e1"/>
+    <path d="M28 148q14 14 27 0t27 0 27 0 27 0 27 0 28 0" fill="none" stroke="#fff8f0" stroke-width="8" stroke-linecap="round"/>
+    <path d="M54 106q14 12 28 0t28 0 28 0 28 0" fill="none" stroke="#fff8f0" stroke-width="7" stroke-linecap="round"/>
+    <g class="candle"><rect x="78" y="58" width="9" height="34" rx="3" fill="#e6dcfa"/><path class="flame" d="M82.500 36c7 8 7 14 0 19-7-5-7-11 0-19z" fill="#f7c873"/></g>
+    <g class="candle"><rect x="105.500" y="52" width="9" height="40" rx="3" fill="#d9b878"/><path class="flame" d="M110 30c7 8 7 14 0 19-7-5-7-11 0-19z" fill="#f7c873"/></g>
+    <g class="candle"><rect x="133" y="58" width="9" height="34" rx="3" fill="#e6dcfa"/><path class="flame" d="M137.500 36c7 8 7 14 0 19-7-5-7-11 0-19z" fill="#f7c873"/></g>
+  </svg>
+  <div class="row">
+    <button id="wish" class="btn" type="button">Make a Birthday Wish</button>
+    <button id="blow" class="btn alt" type="button" disabled>Blow out the candles</button>
+  </div>
+  <p id="wish-msg" class="letter wishmsg" hidden>Close your eyes, make a wish, and give the universe a little time. May this new year bring you beautiful surprises, peaceful days, and countless reasons to smile. 💗</p>
+</section>
+
+<!-- ================================================================
+     ★★★★★  CHANGE SONG HERE  ★★★★★
+     1) Put your song file in the folder  assets/music/
+     2) Write its name in the src="..." of the <audio> tag below,
+        e.g.  src="assets/music/my-song.mp3"
+        (leave src="" to use the built-in Happy Birthday melody)
+     3) Change the song name and singer in the two lines marked below.
+     4) Optional cover picture: replace the ♪ inside <div class="cover">
+        with  <img src="assets/images/cover.jpg" alt="">
+     ================================================================ -->
+<section id="music" class="sec">
+  <h2>A Little Melody for You</h2>
+  <audio id="song" src="song.mp4"></audio> <!-- <<<<<<<< SONG FILE GOES IN src="" -->
+  <div class="player">
+    <div class="cover" id="cover" aria-hidden="true">♪</div>
+    <div class="pinfo">
+      <p class="ptitle" id="ptitle">Happy Birthday to You</p> <!-- <<<<<<<< SONG NAME -->
+      <p class="part" id="partist">Built-in melody</p> <!-- <<<<<<<< SINGER NAME -->
+      <input id="seek" type="range" min="0" max="1000" value="0" aria-label="Song progress" disabled>
+      <div class="times"><span id="tcur">0:00</span><span id="tdur">0:00</span></div>
+      <div class="ctrl">
+        <button id="play" class="btn" type="button">Play</button>
+        <button id="mute" class="btn alt" type="button" aria-pressed="false">Mute</button>
+        <input id="vol" type="range" min="0" max="100" value="70" aria-label="Volume">
+      </div>
+    </div>
+  </div>
+  <p id="music-note" class="sub" aria-live="polite"></p>
+</section>
+
+<section id="surprise" class="sec">
+  <h2>Wait, Montuuuuu… One Last Thing.</h2>
+  <div class="gift" id="gift" aria-hidden="true">🎁</div>
+  <button id="reveal" class="btn" type="button" aria-expanded="false" aria-controls="secret">Open your last little surprise 💗</button>
+  <p id="secret" class="letter" hidden></p>
+</section>
+
+<section id="final" class="final">
+  <p class="star-row" aria-hidden="true">✦ ✧ ✦ ✧ ✦</p>
+  <h2 class="big">Happy Birthday, Montuuuuu! 🌷</h2>
+  <p class="lead">May this year be kinder, brighter, happier, and full of things that make your heart smile.</p>
+  <p class="lead">Some people make memories. Some people become part of them.</p>
+  <p class="lead">Thank you for being my best friend.</p>
+  <p class="hand">Made with love by Abhi 💗</p>
+  <button id="again" class="btn" type="button">Experience it Again</button>
+</section>
+</main>
+
+<script>
+/* =====================================================================
+   TEXT SETTINGS (letter, messages, cards, countdown)
+   The SONG and the PHOTOS are NOT here: they are plain HTML now.
+   Scroll up and search "CHANGE SONG" or "CHANGE PHOTOS".
+   ===================================================================== */
+const CONFIG = {
+
+  /* ---------------------------------------------------------------
+     1) BIRTHDAY COUNTDOWN (optional)
+     Put the month (1-12) and day to show a countdown.
+     Leave both as null to hide it.
+     --------------------------------------------------------------- */
+  birthday: { month: null, day: null },
+
+
+  /* ---------------------------------------------------------------
+     4) TEXT CONTENT
+     --------------------------------------------------------------- */
+
+  // Message that appears when the envelope opens
+  introMessage: "Mannat, this is a small corner of the internet that is only yours. Take your time. 💗",
+
+  // The letter: each line in quotes is one paragraph
+  letter: [
+    "Dear Montuuuuu,",
+    "Today is your birthday, and I wanted to give you something more lasting than a quick message. So I made you a little universe.",
+    "Real friendship is rarer than people think. It’s having someone you can be yourself around, someone who is simply glad you exist. I’m so grateful that you’re that person in my life.",
+    "Thank you for being you, Mannat. Thank you for the conversations, the laughter, and the comfort of knowing you’re there. (Also for putting up with me. I know it’s a lot.)",
+    "I hope this new year brings you happiness, growth, peace, and many wonderful memories. You deserve all of it.",
+    "I can’t promise to be perfect, but I can promise to keep valuing our friendship, to keep showing up, and to keep cheering for you.",
+    "Happy Birthday, Mannat. Keep being wonderfully you."
+  ],
+  letterSign: "With lots of love and friendship,\nAbhi 💗",   // \n = new line
+
+  // "Things That Make You Special" cards
+  things: [
+    { icon: "🌟", title: "Memorable moments", text: "Your unique way of making moments memorable." },
+    { icon: "🦋", title: "Unmistakably you", text: "The little things that make your personality unmistakably yours." },
+    { icon: "😄", title: "Laughter", text: "The laughter that makes an ordinary day better." },
+    { icon: "🫶", title: "Easy talks", text: "The comfort of being able to talk openly." },
+    { icon: "📖", title: "Our scrapbook", text: "The memories that deserve a place in our scrapbook." },
+    { icon: "🌱", title: "Your dreams", text: "Your dreams and the person you’re becoming." },
+    { icon: "🎀", title: "Little details", text: "The little details that make our friendship special." },
+    { icon: "💗", title: "Just Mannat", text: "Simply being Mannat." }
+  ],
+
+  // "Appreciation Department" button messages
+  compliments: [
+    "You make ordinary days feel a little brighter.",
+    "Montuuuuu, the world is better with you in it.",
+    "You are genuinely good company.",
+    "Your kindness matters more than you know.",
+    "You deserve every good thing coming your way."
+  ],
+  happiness: [
+    "Tiny reminder: you’re allowed to celebrate yourself today. 🎉",
+    "Drink some water, smile at nothing, and enjoy your day. 🌷",
+    "Happiness loading… 100%! 💗",
+    "Somewhere, someone is thinking of you fondly. (Hi, it’s me.)"
+  ],
+  funny: [
+    "Official notice: Montuuuuu is hereby declared a birthday legend.",
+    "Warning: cake is mandatory today.",
+    "This department has approved unlimited birthday wishes. 🎀",
+    "Breaking news: you are one year more fabulous."
+  ],
+
+  // The message shown when she opens the last gift
+  surprise: "Montuuuuu, I hope you know that this little corner of the internet was made especially for you. It’s a small way of celebrating you and the memories we’ve made. I hope your birthday reminds you how much happiness, kindness, and wonderful things you deserve. Here’s to more laughter, more memories, and many beautiful chapters ahead. Happy Birthday, Mannat. 💗"
+};
+
+
+/* =====================================================
+   MACHINERY - you normally never need to edit this file.
+   All your content lives in js/config.js
+   ===================================================== */
+(() => {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const body = document.body;
+
+  /* ---- confetti: burst(), cannons(), rain(ms) ---- */
+  const cv = $("#confetti"), cx = cv.getContext("2d"); let parts = [], raf = 0, rainUntil = 0;
+  const COLS = ["#f4b7cb", "#cdb8f0", "#e8c98a", "#d94a76", "#ffffff", "#b9a2e0"];
+  const fit = () => { cv.width = innerWidth; cv.height = innerHeight; };
+  addEventListener("resize", fit); fit();
+  const rnd = Math.random;
+  function add(x, y, vx, vy, g, life, sway) {
+    parts.push({ x, y, vx, vy, g, l: life, sw: sway, w: rnd() * 6, s: 5 + rnd() * 7, r: rnd() * 6, vr: (rnd() - .5) * .3, c: COLS[rnd() * COLS.length | 0], k: rnd() * 3 | 0 });
+  }
+  function start() { if (!raf) raf = requestAnimationFrame(tick); }
+  // round burst from a point
+  function burst(n = 120, x = innerWidth / 2, y = innerHeight / 2) {
+    for (let i = 0; i < (reduce ? 20 : n); i++) add(x, y, (rnd() - .5) * 14, -3 - rnd() * 11, .25, 150);
+    start();
+  }
+  // two party cannons shooting from the bottom corners
+  function cannons() {
+    if (reduce) return burst(30);
+    for (let i = 0; i < 80; i++) {
+      add(0, innerHeight, 5 + rnd() * 9, -(9 + rnd() * 12), .28, 170);
+      add(innerWidth, innerHeight, -(5 + rnd() * 9), -(9 + rnd() * 12), .28, 170);
+    }
+    start();
+  }
+  // gentle confetti falling from the top for a few seconds
+  function rain(ms = 4000) { if (reduce) return; rainUntil = performance.now() + ms; start(); }
+  function tick(now) {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    if (now < rainUntil) for (let i = 0; i < 3; i++) add(rnd() * cv.width, -10, (rnd() - .5) * 2, 1 + rnd() * 2, .02, 500, 1);
+    parts = parts.filter(p => p.l > 0 && p.y < cv.height + 30);
+    parts.forEach(p => {
+      p.vy += p.g; p.vx *= .99; if (p.vy > 6 && p.sw) p.vy = 6;
+      p.x += p.vx + (p.sw ? Math.sin(p.w += .05) * .9 : 0); p.y += p.vy; p.r += p.vr; p.l--;
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.globalAlpha = Math.min(1, p.l / 40); cx.fillStyle = p.c;
+      if (p.k === 0) cx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * .6);
+      else if (p.k === 1) { cx.beginPath(); cx.arc(0, 0, p.s / 2, 0, 6.3); cx.fill(); }
+      else { cx.font = p.s * 2 + "px serif"; cx.textAlign = "center"; cx.fillText("\u2665", 0, 0); }
+      cx.restore();
+    });
+    raf = (parts.length || now < rainUntil) ? requestAnimationFrame(tick) : 0;
+  }
+  // tap/click empty space anywhere for a tiny burst
+  document.addEventListener("pointerdown", e => { if (!e.target.closest("button,a,input,#lb,#intro")) burst(26, e.clientX, e.clientY); });
+
+  /* ---- petals ---- */
+  const petals = $("#petals");
+  function petal(emoji, life) {
+    const p = mk("span", "pt", emoji);
+    p.style.cssText = `left:${Math.random() * 100}%;font-size:${14 + Math.random() * 14}px;animation-duration:${8 + Math.random() * 8}s;animation-delay:${Math.random() * (life || 8)}s;--dx:${(Math.random() - .5) * 160}px`;
+    petals.appendChild(p);
+    if (life) setTimeout(() => p.remove(), 18000);
+  }
+  if (!reduce) for (let i = 0; i < 16; i++) petal(["🌸", "✨", "💗", "🤍"][i % 4]);
+  function shower() { if (!reduce) for (let i = 0; i < 30; i++) petal(["🌸", "🌷", "💗"][i % 3], 3); }
+
+  /* ---- reveal on scroll ---- */
+  const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add("in"); if (e.target.id === "final" && !finalDone) { finalDone = true; cannons(); rain(6000); shower(); } }
+  }), { threshold: .2 }) : null;
+  let finalDone = false;
+  $$(".sec>h2,.hero .lead,.player,.dept,.cards,.wall,#cake-svg").forEach(e => e.classList.add("rv"));
+  [...$$(".rv"), $("#letter-body"), $("#final")].forEach(e => io ? io.observe(e) : e.classList.add("in"));
+
+  /* ---- letter ---- */
+  const lb = $("#letter-body");
+  CONFIG.letter.forEach(t => lb.appendChild(mk("p", "", t)));
+  const sg = mk("p", "sign", CONFIG.letterSign); lb.appendChild(sg);
+  $$("p", lb).forEach((p, i) => p.style.transitionDelay = reduce ? "0s" : i * .35 + "s");
+
+  /* ---- gallery + lightbox ---- */
+  const pols = $$("#wall .pol");
+  const MISSING = "📷 Add a photo in assets/photos";
+  function guard(box) {
+    const img = $("img", box); if (!img) return;
+    const bad = () => { box.textContent = MISSING; };
+    img.addEventListener("error", bad);
+    if (img.complete && !img.naturalWidth && img.getAttribute("src")) bad();
+  }
+  const capOf = p => $(".ct", p).textContent, dateOf = p => $(".dt", p).textContent.trim();
+  pols.forEach((b, i) => {
+    b.type = "button"; b.style.setProperty("--r", ((i % 2 ? 1 : -1) * (1 + i % 3)) + "deg");
+    b.setAttribute("aria-label", "Open photo: " + (capOf(b) || "memory " + (i + 1)));
+    guard($(".ph", b)); b.addEventListener("click", () => openLb(i, b));
+  });
+  const lbox = mk("div"); lbox.id = "lb"; lbox.hidden = true; lbox.setAttribute("role", "dialog"); lbox.setAttribute("aria-modal", "true"); lbox.setAttribute("aria-label", "Photo viewer");
+  const bx = mk("button", "lbb", "✕"), bp = mk("button", "lbb", "‹"), bn = mk("button", "lbb", "›"), stage = mk("div"), cap = mk("p");
+  bx.id = "lb-x"; bp.id = "lb-p"; bn.id = "lb-n";
+  bx.setAttribute("aria-label", "Close"); bp.setAttribute("aria-label", "Previous photo"); bn.setAttribute("aria-label", "Next photo");
+  [bx, bp, bn].forEach(b => b.type = "button"); lbox.append(bx, bp, bn, stage, cap); body.appendChild(lbox);
+  let cur = 0, opener = null;
+  function showLb(i) { cur = (i + pols.length) % pols.length; const p = pols[cur], box = $(".ph", p).cloneNode(true); guard(box); stage.replaceChildren(box); cap.textContent = capOf(p) + (dateOf(p) ? " · " + dateOf(p) : ""); }
+  function openLb(i, from) { opener = from; showLb(i); lbox.hidden = false; body.classList.add("lock"); bx.focus(); }
+  function closeLb() { lbox.hidden = true; if (introGone) body.classList.remove("lock"); if (opener) opener.focus(); }
+  bx.addEventListener("click", closeLb); bp.addEventListener("click", () => showLb(cur - 1)); bn.addEventListener("click", () => showLb(cur + 1));
+  lbox.addEventListener("click", e => { if (e.target === lbox) closeLb(); });
+  addEventListener("keydown", e => {
+    if (lbox.hidden) return;
+    if (e.key === "Escape") closeLb(); else if (e.key === "ArrowLeft") showLb(cur - 1); else if (e.key === "ArrowRight") showLb(cur + 1);
+    else if (e.key === "Tab") { const f = [bx, bp, bn], i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? -1 : 1) + 3) % 3].focus(); }
+  });
+
+  /* ---- little things ---- */
+  CONFIG.things.forEach(t => {
+    const c = mk("button", "card"); c.type = "button"; c.setAttribute("aria-pressed", "false");
+    c.append(mk("span", "ic", t.icon), mk("b", "", t.title), mk("span", "", t.text));
+    c.addEventListener("click", () => { const on = c.classList.toggle("on"); c.setAttribute("aria-pressed", on); });
+    $("#cards").appendChild(c);
+  });
+
+  /* ---- appreciation department ---- */
+  const last = {};
+  $$("[data-pool]").forEach(b => b.addEventListener("click", () => {
+    const pool = CONFIG[b.dataset.pool]; let i;
+    do { i = Math.floor(Math.random() * pool.length); } while (pool.length > 1 && i === last[b.dataset.pool]);
+    last[b.dataset.pool] = i; $("#said").textContent = pool[i]; pop();
+  }));
+  function pop() { const h = $("#heart"); h.classList.remove("pop"); void h.offsetWidth; h.classList.add("pop"); }
+  $("#heart").addEventListener("click", e => { pop(); const r = e.currentTarget.getBoundingClientRect(); burst(30, r.left + r.width / 2, r.top); });
+
+  /* ---- cake ---- */
+  const cake = $("#cake"), wish = $("#wish"), blow = $("#blow"), wm = $("#wish-msg");
+  wish.addEventListener("click", () => {
+    if (cake.classList.contains("out")) { cake.classList.remove("out", "wishing"); wm.hidden = true; wish.textContent = "Make a Birthday Wish"; return; }
+    cake.classList.add("wishing"); blow.disabled = false; wish.textContent = "Wish made… now blow them out"; wish.disabled = true;
+  });
+  blow.addEventListener("click", () => {
+    cake.classList.add("out"); cake.classList.remove("wishing"); wm.hidden = false; blow.disabled = true;
+    wish.disabled = false; wish.textContent = "Relight the candles"; cannons(); wm.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+  });
+
+  /* ---- built-in Happy Birthday melody (Web Audio, behaves like an <audio> element) ---- */
+  const BEAT = .6, NOTES = (() => {
+    const f = { G4: 392, A4: 440, B4: 493.88, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99 };
+    const s = "G4 .75,G4 .25,A4 1,G4 1,C5 1,B4 2,G4 .75,G4 .25,A4 1,G4 1,D5 1,C5 2,G4 .75,G4 .25,G5 1,E5 1,C5 1,B4 1,A4 1,F5 .75,F5 .25,E5 1,C5 1,D5 1,C5 2";
+    let t = 0; return s.split(",").map(x => { const [n, d] = x.split(" "); const o = { f: f[n], t: t * BEAT, d: d * BEAT }; t += +d; return o; });
+  })();
+  const SONG_LEN = NOTES.reduce((m, n) => Math.max(m, n.t + n.d), 0) + .6;
+  class SynthAudio extends EventTarget {
+    constructor() { super(); this.paused = true; this.loop = true; this.duration = SONG_LEN; this._v = .7; this._m = false; this._off = 0; this._t0 = 0; this.ctx = null; this.gain = null; this.nodes = []; this.timer = 0; }
+    get volume() { return this._v; } set volume(v) { this._v = v; this._apply(); }
+    get muted() { return this._m; } set muted(m) { this._m = m; this._apply(); }
+    _apply() { if (this.gain) this.gain.gain.value = this._m ? 0 : this._v * .5; }
+    get currentTime() { return this.paused ? this._off : (this.ctx.currentTime - this._t0) % SONG_LEN; }
+    set currentTime(t) { this._off = t; if (!this.paused) this._schedule(t); }
+    _stopNodes() { this.nodes.forEach(o => { try { o.stop(); } catch (e) { } }); this.nodes = []; }
+    _schedule(off) {
+      this._stopNodes(); const c = this.ctx; this._t0 = c.currentTime - off;
+      NOTES.forEach(n => {
+        if (n.t < off) return;
+        const o = c.createOscillator(), g = c.createGain(), at = c.currentTime + (n.t - off);
+        o.type = "triangle"; o.frequency.value = n.f; g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(1, at + .03); g.gain.exponentialRampToValueAtTime(.001, at + n.d * .95);
+        o.connect(g); g.connect(this.gain); o.start(at); o.stop(at + n.d); this.nodes.push(o);
+      });
+    }
+    play() {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return Promise.reject(new Error("No Web Audio"));
+        if (!this.ctx) { this.ctx = new AC(); this.gain = this.ctx.createGain(); this.gain.connect(this.ctx.destination); this._apply(); }
+        this.ctx.resume(); this._schedule(this._off); this.paused = false;
+        this.timer = setInterval(() => { if (this.ctx.currentTime - this._t0 >= SONG_LEN) this._schedule(0); this.dispatchEvent(new Event("timeupdate")); }, 250);
+        this.dispatchEvent(new Event("play")); return Promise.resolve();
+      } catch (e) { return Promise.reject(e); }
+    }
+    pause() { if (this.paused) return; this._off = this.currentTime; this.paused = true; clearInterval(this.timer); this._stopNodes(); this.dispatchEvent(new Event("pause")); }
+  }
+
+  /* ---- music ---- */
+  const songEl = $("#song"), songSrc = (songEl.getAttribute("src") || "").trim(); if (!songSrc) songEl.removeAttribute("src");
+  const synth = !songSrc, has = true, audio = synth ? new SynthAudio() : songEl; let broken = false;
+  const fab = $("#fab-music"), playB = $("#play"), seek = $("#seek"), note = $("#music-note");
+  const fmt = s => isFinite(s) ? Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0") : "0:00";
+  if (!has) { note.textContent = "No song yet."; playB.disabled = true; $("#mute").disabled = true; $("#vol").disabled = true; }
+  else {
+    fab.hidden = false; audio.loop = true; audio.volume = .7;
+    if (!synth) { audio.preload = "metadata"; }
+    else { note.textContent = "Playing a built-in Happy Birthday melody. To use your own song, put its file name in the <audio> tag (search CHANGE SONG)."; seek.disabled = false; $("#tdur").textContent = fmt(audio.duration); }
+  }
+  audio.addEventListener("error", () => { broken = true; note.textContent = "The song couldn’t be loaded. Check the file name in the <audio src> (search CHANGE SONG)."; syncUi(); });
+  function syncUi() { const p = has && !broken && !audio.paused; playB.textContent = p ? "Pause" : "Play"; fab.classList.toggle("on", p); fab.setAttribute("aria-label", p ? "Pause music" : "Play music"); fab.textContent = p ? "❚❚" : "♪"; }
+  function playMusic() { if (!has || broken) return; audio.play().then(syncUi).catch(() => { note.textContent = "Your browser blocked playback. Press Play to start."; syncUi(); }); }
+  function toggle() { audio.paused ? playMusic() : (audio.pause(), syncUi()); }
+  playB.addEventListener("click", toggle); fab.addEventListener("click", toggle);
+  audio.addEventListener("play", syncUi); audio.addEventListener("pause", syncUi);
+  audio.addEventListener("loadedmetadata", () => { seek.disabled = false; $("#tdur").textContent = fmt(audio.duration); });
+  audio.addEventListener("timeupdate", () => { $("#tcur").textContent = fmt(audio.currentTime); if (audio.duration) seek.value = audio.currentTime / audio.duration * 1000; });
+  seek.addEventListener("input", () => { if (audio.duration) audio.currentTime = seek.value / 1000 * audio.duration; });
+  $("#vol").addEventListener("input", e => { audio.volume = e.target.value / 100; });
+  $("#mute").addEventListener("click", e => { audio.muted = !audio.muted; e.target.setAttribute("aria-pressed", audio.muted); e.target.textContent = audio.muted ? "Unmute" : "Mute"; });
+
+
+  /* ---- surprise ---- */
+  const rev = $("#reveal"), sec = $("#secret"), gift = $("#gift");
+  sec.textContent = CONFIG.surprise;
+  rev.addEventListener("click", () => {
+    if (!sec.hidden) return;
+    gift.classList.add("open"); sec.hidden = false; rev.setAttribute("aria-expanded", "true"); rev.disabled = true;
+    shower(); cannons(); rain(3000); sec.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+  });
+
+  /* ---- intro / replay ---- */
+  const intro = $("#intro"); let introGone = false, timer = 0;
+  function closeIntro() {
+    clearTimeout(timer); introGone = true; intro.classList.add("gone"); intro.setAttribute("aria-hidden", "true"); intro.inert = true;
+    if (lbox.hidden) body.classList.remove("lock"); window.scrollTo(0, 0); $("#home h2").setAttribute("tabindex", "-1"); $("#home h2").focus({ preventScroll: true });
+    setTimeout(() => { cannons(); rain(3500); }, 500);
+  }
+  $("#open").addEventListener("click", () => {
+    const m = $("#intro-msg"); m.textContent = CONFIG.introMessage; m.hidden = false;
+    intro.classList.add("open"); $("#open").disabled = true; burst(100, innerWidth / 2, innerHeight / 2); playMusic();
+    timer = setTimeout(closeIntro, reduce ? 1500 : 4800);
+  });
+  $("#skip").addEventListener("click", closeIntro);
+  $("#again").addEventListener("click", () => {
+    introGone = false; intro.inert = false; intro.removeAttribute("aria-hidden"); intro.classList.remove("open", "gone");
+    $("#intro-msg").hidden = true; $("#open").disabled = false; body.classList.add("lock");
+    sec.hidden = true; gift.classList.remove("open"); rev.disabled = false; rev.setAttribute("aria-expanded", "false");
+    cake.classList.remove("out", "wishing"); wm.hidden = true; wish.disabled = false; wish.textContent = "Make a Birthday Wish"; blow.disabled = true;
+    $$(".card.on").forEach(c => c.click()); finalDone = false; window.scrollTo(0, 0); $("#open").focus();
+  });
+
+  /* ---- nav, back-to-top ---- */
+  const nb = $("#navbtn"), menu = $("#menu");
+  nb.addEventListener("click", () => { const s = menu.classList.toggle("show"); nb.setAttribute("aria-expanded", s); });
+  menu.addEventListener("click", e => { if (e.target.tagName === "A") { menu.classList.remove("show"); nb.setAttribute("aria-expanded", "false"); } });
+  const tt = $("#totop");
+  addEventListener("scroll", () => { tt.hidden = scrollY < 600; }, { passive: true });
+  tt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }));
+
+  /* ---- countdown (visitor's local time; hidden unless month+day set) ---- */
+  const B = CONFIG.birthday, cd = $("#countdown");
+  if (B.month && B.day) {
+    cd.hidden = false;
+    const upd = () => {
+      const n = new Date(); let t = new Date(n.getFullYear(), B.month - 1, B.day);
+      if (n.getMonth() === t.getMonth() && n.getDate() === t.getDate()) { cd.textContent = "🎉 It’s today! Happy Birthday! 🎉"; return; }
+      if (t < n) t = new Date(n.getFullYear() + 1, B.month - 1, B.day);
+      const d = t - n, D = Math.floor(d / 864e5), H = Math.floor(d % 864e5 / 36e5), Mi = Math.floor(d % 36e5 / 6e4), S = Math.floor(d % 6e4 / 1e3);
+      cd.textContent = `Only ${D}d ${H}h ${Mi}m ${S}s until the big day 🎈`;
+    };
+    upd(); setInterval(upd, 1000);
+  }
+})();
+
+</script>
+</body>
+</html>
